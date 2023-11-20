@@ -9,7 +9,6 @@ app.post("/logs", (req, res) => {
     const logData = req.body;
     console.log("Received log:", logData);
 
-    // Implement storage logic (e.g., save to localStorage)
     const ingestedLogsString = localStorage.getItem("ingestLogs");
     const ingestedLogs = ingestedLogsString ? JSON.parse(ingestedLogsString) : [];
     ingestedLogs.push(logData);
@@ -20,17 +19,15 @@ app.post("/logs", (req, res) => {
 
 // Endpoint for searching logs
 app.post("/search-logs", (req, res) => {
-    const searchParams = req.body; // Assuming the search parameters are sent in the request body
-    const results = searchLogs(searchParams); // Implement the actual search logic
+    const searchParams = req.body;
+    const results = searchLogs(searchParams);
     res.json(results);
 });
 
-// Function to search logs based on provided filters
 function searchLogs(searchParams) {
     const ingestedLogsString = localStorage.getItem("ingestLogs");
     const ingestedLogs = ingestedLogsString ? JSON.parse(ingestedLogsString) : [];
 
-    // Implement the logic to filter logs based on searchParams
     return ingestedLogs.filter((log) => {
         return Object.keys(searchParams).every((param) => {
             if (searchParams[param] !== "") {
@@ -43,17 +40,15 @@ function searchLogs(searchParams) {
                         return log.resourceId === searchParams.resourceId;
                     case "timestamp":
                         return new Date(log.timestamp) >= new Date(searchParams.timestamp.start) && new Date(log.timestamp) <= new Date(searchParams.timestamp.end);
-                    // Add more cases for other parameters if needed
                     default:
-                        return true; // Default to true for any other parameters
+                        return true;
                 }
             }
-            return true; // Return true if the search parameter is an empty string
+            return true;
         });
     });
 }
 
-// Start the server
 app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);
 });
